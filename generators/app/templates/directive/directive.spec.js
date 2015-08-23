@@ -1,9 +1,9 @@
 'use strict';
 
-describe('aee.my-module', function() {
+describe('Directive', function() {
 
   // load the directive's module and view
-  beforeEach(module('aee.my-module'));
+  beforeEach(module('AdrienEtienne.my-module'));
   beforeEach(module('src/my-directive.html'));
 
   var element, scope;

@@ -3,28 +3,8 @@ var yeoman = require('yeoman-generator');
 var chalk = require('chalk');
 var yosay = require('yosay');
 
-var config = require('./yo-rc.json');
-var util = require('./util');
+var c = require('./yo-rc.json');
 var _ = require('lodash');
-
-var files = [];
-
-function addFile(origin, dest, arg1, arg2) {
-  files.push({
-    src: origin,
-    dest: dest,
-    before: arg1,
-    after: arg2
-  });
-}
-
-function addFileJSON(origin, dest, obj) {
-  files.push({
-    src: origin,
-    dest: dest,
-    after: obj
-  });
-}
 
 module.exports = yeoman.generators.Base.extend({
   prompting: function() {
@@ -40,7 +20,7 @@ module.exports = yeoman.generators.Base.extend({
       type: 'input',
       name: 'authorName',
       message: 'Your name?',
-      default: 'aee'
+      default: 'AdrienEtienne'
     }, {
       type: 'input',
       name: 'authorMail',
@@ -50,11 +30,12 @@ module.exports = yeoman.generators.Base.extend({
       type: 'input',
       name: 'name',
       message: 'Your project name',
-      default: 'my-module'
+      default: 'my-module2'
     }, {
       type: 'input',
       name: 'directiveName',
-      message: 'Whould you like to create a directive?'
+      message: 'Whould you like to create a directive?',
+      default: 'my-dir'
     }, {
       type: 'input',
       name: 'serviceName',
@@ -62,73 +43,92 @@ module.exports = yeoman.generators.Base.extend({
     }];
 
     this.prompt(prompts, function(props) {
+      props.authorName = _.camelCase(props.authorName);
       props.name = props.name.replace(' ', '-');
-      config.name = props.name;
-      config.author.name = props.authorName;
-      config.author.email = props.authorMail;
-      config.directive.name = props.directiveName;
-      config.service.name = props.serviceName;
+      props.directiveName = props.directiveName.replace(' ', '-');
+      props.serviceName = props.serviceName.replace(' ', '-');
+      this.props = props;
       done();
     }.bind(this));
   },
 
   writing: {
     app: function() {
-
-      addFileJSON(this.templatePath('package.json'), this.destinationPath('package.json'), {
-        name: config.name,
+      var pkg = require(this.templatePath('package.json'));
+      pkg = _.merge(pkg, {
+        name: this.props.name,
         author: {
-          name: this.props.authorName,
+          name: _.camelCase(this.props.authorName),
           email: this.props.authorMail
         }
       });
-
-      addFileJSON(this.templatePath('bower.json'), this.destinationPath('bower.json'), {
-        name: config.name
-      });
+      this.fs.writeJSON(this.destinationPath('package.json'), pkg);
 
       var bo = require(this.templatePath('bower.json'));
       bo.name = this.props.name;
       bo.main.push('dist/' + this.props.name + '.min.js');
       this.fs.writeJSON(this.destinationPath('bower.json'), bo);
-
-
-
-      this.fs.copy(
-        this.templatePath('_directive.html'),
-        this.destinationPath('src/my-directive.html'));
     },
 
-    directive: function() {
-      if (config.directive.name && config.directive.name !== '') {
-        var directive = this.fs.read(this.templatePath('_directive.js'));
-        directive = directive.replace('aee.', this.props.authorName + '.');
-        directive = directive.replace('my-module', this.props.name);
-        this.fs.write(this.destinationPath('src/my-directive.js'), directive);
-
-        console.log('creation of directive : ', config.directive.name);
-        var directive = this.fs.read(this.templatePath('_directive.spec.js'));
-        directive = directive.replace('aee.my-module', this.props.authorName + '.' + this.props.name);
-        this.fs.write(this.destinationPath('test/my-directive.js'), directive);
+    page: function() {
+      if (this.props.directiveName && this.props.directiveName !== '') {
+        var home = this.fs.read(this.templatePath('page/home.html'));
+        home = home.replace(
+          c.directive.name,
+          this.props.directiveName);
+        this.fs.write(this.destinationPath('page/home.html'), home);
+      } else {
+        this.fs.copy(
+          this.templatePath('page/home.html'),
+          this.destinationPath('page/home.html'));
       }
-    },
 
-    serve: function() {
       this.fs.copy(
-        this.templatePath('_page/home.html'),
-        this.destinationPath('page/home.html'));
-      this.fs.copy(
-        this.templatePath('_page/home.controller.js'),
+        this.templatePath('page/home.controller.js'),
         this.destinationPath('page/home.controller.js'));
 
-      var app = this.fs.read(this.templatePath('_app.js'));
-      app = app.replace('aee.my-module', this.props.authorName + '.' + this.props.name);
+      var app = this.fs.read(this.templatePath('app.js'));
+      app = app.replace(c.author.name + '.' + c.name, this.props.authorName + '.' + this.props.name);
       this.fs.write(this.destinationPath('app.js'), app);
     },
 
+    directive: function() {
+      if (this.props.directiveName && this.props.directiveName !== '') {
+        this.props.directiveName = this.props.directiveName.replace(' ', '-');
+
+        this.fs.copy(
+          this.templatePath('directive/directive.html'),
+          this.destinationPath('src/' + this.props.directiveName + '.html'));
+
+        var directive = this.fs.read(this.templatePath('directive/directive.js'));
+        directive = directive.replace(
+          c.author.name + '.' + c.name,
+          this.props.authorName + '.' + this.props.name);
+        directive = directive.replace(
+          _.camelCase(c.directive.name),
+          _.camelCase(this.props.directiveName));
+        directive = directive.replace(
+          c.directive.name,
+          this.props.directiveName);
+        this.fs.write(this.destinationPath('src/' + this.props.directiveName + '.js'), directive);
+
+        directive = this.fs.read(this.templatePath('directive/directive.spec.js'));
+        directive = directive.replace(
+          c.author.name + '.' + c.name,
+          this.props.authorName + '.' + this.props.name);
+        directive = directive.replace(
+          c.directive.name,
+          this.props.directiveName);
+        directive = directive.replace(
+          c.directive.name,
+          this.props.directiveName);
+        this.fs.write(this.destinationPath('test/' + this.props.directiveName + '.spec.js'), directive);
+      }
+    },
+
     projectfiles: function() {
-      var rm = this.fs.read(this.templatePath('_README.md'));
-      rm = rm.replace('my-module', this.props.name);
+      var rm = this.fs.read(this.templatePath('README.md'));
+      rm = rm.replace(c.name, this.props.name);
       this.fs.write(this.destinationPath('README.md'), rm);
 
       this.fs.copy(
@@ -140,9 +140,6 @@ module.exports = yeoman.generators.Base.extend({
       this.fs.copy(
         this.templatePath('Gruntfile.js'),
         this.destinationPath('Gruntfile.js'));
-      this.fs.copy(
-        this.templatePath('index.html'),
-        this.destinationPath('index.html'));
       this.fs.copy(
         this.templatePath('index.html'),
         this.destinationPath('index.html'));

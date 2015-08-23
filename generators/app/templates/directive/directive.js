@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('aee.my-module', [])
+angular.module('AdrienEtienne.my-module', [])
   .directive('myDirective', function() {
     return {
       templateUrl: 'src/my-directive.html',

@@ -2,7 +2,7 @@
 
 angular.module('myApp', [
   'ngRoute',
-  'aee.my-module'
+  'AdrienEtienne.my-module'
 ]).
 config(['$routeProvider', '$locationProvider', function($routeProvider, $locationProvider) {
 
