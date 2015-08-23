@@ -1,0 +1,22 @@
+{
+  "name": "my-module",
+  "author": {
+    "name": "Adrien Etienne",
+    "email": "a.etienne92@gmail.com"
+  },
+  "src": "src",
+  "test": "test",
+  "app": {
+    "files": ["app.js", "directive.js", "directive.spec.js"]
+  },
+  "directive": {
+    "name": "my-directive",
+    "folder": "directive",
+    "files": ["directive.html", "directive.js", "directive.spec.js"]
+  },
+  "service": {
+    "name": "my-service",
+    "folder": "service",
+    "files": ["service.js", "service.spec.js"]
+  }
+}
