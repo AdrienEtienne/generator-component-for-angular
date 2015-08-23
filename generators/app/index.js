@@ -30,19 +30,18 @@ module.exports = yeoman.generators.Base.extend({
       type: 'input',
       name: 'name',
       message: 'Your project name',
-      default: 'my-module2'
+      default: 'my-module'
     }, {
       type: 'input',
       name: 'directiveName',
       message: 'Give a name to your directive?',
-      default: 'my-dir'
+      default: 'my-directive'
     }];
 
     this.prompt(prompts, function(props) {
       props.authorName = _.camelCase(props.authorName);
       props.name = props.name.replace(' ', '-');
       props.directiveName = props.directiveName.replace(' ', '-');
-      props.serviceName = props.serviceName.replace(' ', '-');
       this.props = props;
       done();
     }.bind(this));
@@ -69,9 +68,8 @@ module.exports = yeoman.generators.Base.extend({
     page: function() {
       if (this.props.directiveName && this.props.directiveName !== '') {
         var home = this.fs.read(this.templatePath('page/home.html'));
-        home = home.replace(
-          c.directive.name,
-          this.props.directiveName);
+        home = home.replace(c.directive.name, this.props.directiveName);
+        home = home.replace(c.directive.name, this.props.directiveName);
         this.fs.write(this.destinationPath('page/home.html'), home);
       } else {
         this.fs.copy(
@@ -95,6 +93,10 @@ module.exports = yeoman.generators.Base.extend({
         this.fs.copy(
           this.templatePath('directive/directive.html'),
           this.destinationPath('src/' + this.props.directiveName + '.html'));
+
+        this.fs.copy(
+          this.templatePath('directive/directive.less'),
+          this.destinationPath('src/' + this.props.directiveName + '.less'));
 
         var directive = this.fs.read(this.templatePath('directive/directive.js'));
         directive = directive.replace(
