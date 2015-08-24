@@ -14,9 +14,7 @@
   },
   "ignore": [
     ".*",
-    "*.js",
     "index.html",
-    "/*.min.*",
     "package.json",
     "karma.conf.js",
     "Gruntfile.js",

@@ -65,7 +65,7 @@ module.exports = yeoman.generators.Base.extend({
 
       var bo = require(this.templatePath('bower.json'));
       bo.name = this.props.name;
-      bo.main.push('dist/' + this.props.name + '.min.js');
+      bo.main.push('dist/' + this.props.name + '.js');
       if (this.props.directiveName && this.props.directiveName !== '') {
         bo.main.push('dist/' + this.props.name + '.css');
       }
