@@ -130,7 +130,7 @@ module.exports = function(grunt) {
       options: {},
       dist: {
         files: {
-          '<%= yo.dist %>/<%= pkg.name %>.css': '<%= yo.src %>/*.less'
+          '<%= yo.dist %>/<%= pkg.name %>.css': '<%= yo.src %>/**/*.less'
         }
       }
     },

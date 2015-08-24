@@ -34,13 +34,11 @@ module.exports = yeoman.generators.Base.extend({
     }, {
       type: 'input',
       name: 'directiveName',
-      message: 'You want create a directive?',
-      default: c.directive.name
+      message: 'You want create a directive?'
     }, {
       type: 'input',
       name: 'serviceName',
-      message: 'You want create a service?',
-      default: c.service.name
+      message: 'You want create a service?'
     }];
 
     this.prompt(prompts, function(props) {
