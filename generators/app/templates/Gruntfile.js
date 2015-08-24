@@ -16,6 +16,7 @@ module.exports = function(grunt) {
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
   grunt.loadNpmTasks('grunt-angular-templates');
+  grunt.loadNpmTasks('grunt-ng-annotate');
 
   // Project configuration
   grunt.initConfig({
@@ -185,13 +186,11 @@ module.exports = function(grunt) {
         dest: '<%= yo.dist %>/<%= pkg.name %>.tpl.js'
       }
     },
-    ngmin: {
-      options: {
-        banner: '<%= meta.banner %>'
-      },
+    ngAnnotate: {
       dist: {
-        src: ['<%= yo.src %>/*.js', '<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js'],
-        dest: '<%= yo.dist %>/<%= pkg.name %>.js'
+        files: {
+          '<%= yo.dist %>/<%= pkg.name %>.js': ['<%= yo.src %>/*.js', '<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js']
+        },
       }
     },
     uglify: {
@@ -214,11 +213,11 @@ module.exports = function(grunt) {
     'clean:dist',
     'less:dist',
     'ngtemplates',
-    'ngmin:dist',
+    'ngAnnotate',
     'uglify:dist'
   ]);
 
-  grunt.registerTask('serve', function(target) {
+  grunt.registerTask('serve', function() {
     grunt.task.run([
       'build',
       'injector',

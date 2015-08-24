@@ -4,7 +4,7 @@
   "esnext": true,
   "bitwise": true,
   "camelcase": false,
-  "curly": false,
+  "curly": true,
   "eqeqeq": true,
   "immed": true,
   "indent": 2,
@@ -14,19 +14,27 @@
   "quotmark": "single",
   "regexp": true,
   "undef": true,
-  "unused": false,
+  "unused": true,
   "strict": true,
-  "globalstrict": true,
   "trailing": true,
   "smarttabs": true,
-  "predef": [
-    "$",
-    "angular",
-    "describe",
-    "beforeEach",
-    "afterEach",
-    "inject",
-    "it",
-    "should"
-  ]
+  "globals": {
+    "jQuery": true,
+    "angular": true,
+    "console": true,
+    "$": true,
+    "_": true,
+    "moment": true,
+    "describe": true,
+    "beforeEach": true,
+    "module": true,
+    "inject": true,
+    "it": true,
+    "xit": true,
+    "expect": true,
+    "browser": true,
+    "element": true,
+    "by": true,
+    "should": true
+  }
 }
