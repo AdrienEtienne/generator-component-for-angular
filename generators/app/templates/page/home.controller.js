@@ -3,6 +3,6 @@
 
 'use strict';
 
-angular.module('myApp').controller('HomeCtrl', [function() {
+angular.module('myApp').controller('HomeCtrl', ['$scope', function($scope) {
 
 }]);

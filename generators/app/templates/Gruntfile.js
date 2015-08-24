@@ -181,7 +181,7 @@ module.exports = function(grunt) {
         }
       },
       app: {
-        src: '<%= yo.src %>/**.html',
+        src: '<%= yo.src %>/**/*.html',
         dest: '<%= yo.dist %>/<%= pkg.name %>.tpl.js'
       }
     },
