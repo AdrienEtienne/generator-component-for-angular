@@ -13,8 +13,11 @@ module.exports = function(config) {
             'bower_components/jquery/dist/jquery.min.js',
             'bower_components/angular-mocks/angular-mocks.js',
             'src/*.js',
+            'src/**/*.js',
             'src/*.html',
-            'test/*.js'
+            'src/**/*.html',
+            'test/*.js',
+            'test/**/*.js'
         ],
 
         preprocessors: {

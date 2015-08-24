@@ -30,18 +30,24 @@ module.exports = yeoman.generators.Base.extend({
       type: 'input',
       name: 'name',
       message: 'Your project name',
-      default: 'my-module'
+      default: c.name
     }, {
       type: 'input',
       name: 'directiveName',
-      message: 'Give a name to your directive?',
-      default: 'my-directive'
+      message: 'You want create a directive?',
+      default: c.directive.name
+    }, {
+      type: 'input',
+      name: 'serviceName',
+      message: 'You want create a service?',
+      default: c.service.name
     }];
 
     this.prompt(prompts, function(props) {
       props.authorName = _.camelCase(props.authorName);
       props.name = props.name.replace(' ', '-');
       props.directiveName = props.directiveName.replace(' ', '-');
+      props.serviceName = props.serviceName.replace(' ', '-');
       this.props = props;
       done();
     }.bind(this));
@@ -66,6 +72,14 @@ module.exports = yeoman.generators.Base.extend({
         bo.main.push('dist/' + this.props.name + '.css');
       }
       this.fs.writeJSON(this.destinationPath('bower.json'), bo);
+    },
+
+    module: function() {
+      var mod = this.fs.read(this.templatePath('module.js'));
+      mod = mod.replace(
+        c.author.name + '.' + c.name,
+        this.props.authorName + '.' + this.props.name);
+      this.fs.write(this.destinationPath('src/' + this.props.name + '.js'), mod);
     },
 
     page: function() {
@@ -95,11 +109,11 @@ module.exports = yeoman.generators.Base.extend({
 
         this.fs.copy(
           this.templatePath('directive/directive.html'),
-          this.destinationPath('src/' + this.props.directiveName + '.html'));
+          this.destinationPath('src/directive/' + this.props.directiveName + '.html'));
 
         this.fs.copy(
           this.templatePath('directive/directive.less'),
-          this.destinationPath('src/' + this.props.directiveName + '.less'));
+          this.destinationPath('src/directive/' + this.props.directiveName + '.less'));
 
         var directive = this.fs.read(this.templatePath('directive/directive.js'));
         directive = directive.replace(
@@ -111,19 +125,40 @@ module.exports = yeoman.generators.Base.extend({
         directive = directive.replace(
           c.directive.name,
           this.props.directiveName);
-        this.fs.write(this.destinationPath('src/' + this.props.directiveName + '.js'), directive);
+        this.fs.write(this.destinationPath('src/directive/' + this.props.directiveName + '.js'), directive);
 
         directive = this.fs.read(this.templatePath('directive/directive.spec.js'));
         directive = directive.replace(
           c.author.name + '.' + c.name,
           this.props.authorName + '.' + this.props.name);
-        directive = directive.replace(
-          c.directive.name,
-          this.props.directiveName);
-        directive = directive.replace(
-          c.directive.name,
-          this.props.directiveName);
-        this.fs.write(this.destinationPath('test/' + this.props.directiveName + '.spec.js'), directive);
+        var find = c.directive.name;
+        var re = new RegExp(find, 'g');
+        directive = directive.replace(re, this.props.directiveName);
+        this.fs.write(this.destinationPath('test/directive/' + this.props.directiveName + '.spec.js'), directive);
+      }
+    },
+
+    service: function() {
+      if (this.props.serviceName && this.props.serviceName !== '') {
+        this.props.serviceName = this.props.serviceName.replace(' ', '-');
+
+        var service = this.fs.read(this.templatePath('service/service.js'));
+        service = service.replace(
+          c.author.name + '.' + c.name,
+          this.props.authorName + '.' + this.props.name);
+        service = service.replace(
+          _.camelCase(c.service.name),
+          _.camelCase(this.props.serviceName));
+        this.fs.write(this.destinationPath('src/service/' + this.props.serviceName + '.js'), service);
+
+        service = this.fs.read(this.templatePath('service/service.spec.js'));
+        service = service.replace(
+          c.author.name + '.' + c.name,
+          this.props.authorName + '.' + this.props.name);
+        var find = _.camelCase(c.service.name);
+        var re = new RegExp(find, 'g');
+        service = service.replace(re, _.camelCase(this.props.serviceName));
+        this.fs.write(this.destinationPath('test/service/' + this.props.serviceName + '.spec.js'), service);
       }
     },
 

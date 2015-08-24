@@ -10,7 +10,7 @@
     "files": ["app.js", "directive.js", "directive.spec.js"]
   },
   "directive": {
-    "name": "my-directive",
+  "name": "my-directive",
     "folder": "directive",
     "files": ["directive.html", "directive.js", "directive.spec.js"]
   },

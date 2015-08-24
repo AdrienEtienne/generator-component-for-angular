@@ -190,7 +190,7 @@ module.exports = function(grunt) {
         banner: '<%= meta.banner %>'
       },
       dist: {
-        src: ['<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js'],
+        src: ['<%= yo.src %>/*.js', '<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js'],
         dest: '<%= yo.dist %>/<%= pkg.name %>.js'
       }
     },

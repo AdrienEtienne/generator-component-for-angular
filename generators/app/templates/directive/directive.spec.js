@@ -4,7 +4,7 @@ describe('Directive', function() {
 
   // load the directive's module and view
   beforeEach(module('AdrienEtienne.my-module'));
-  beforeEach(module('src/my-directive.html'));
+  beforeEach(module('src/directive/my-directive.html'));
 
   var element, scope;
 
