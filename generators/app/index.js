@@ -187,6 +187,15 @@ module.exports = yeoman.generators.Base.extend({
         this.templatePath('karma.conf.js'),
         this.destinationPath('karma.conf.js'));
       this.fs.copy(
+        this.templatePath('protractor.conf.js'),
+        this.destinationPath('protractor.conf.js'));
+      this.fs.copy(
+        this.templatePath('e2e/page.po.js'),
+        this.destinationPath('e2e/page.po.js'));
+      this.fs.copy(
+        this.templatePath('e2e/page.spec.js'),
+        this.destinationPath('e2e/page.spec.js'));
+      this.fs.copy(
         this.templatePath('Makefile'),
         this.destinationPath('Makefile'));
       this.fs.copy(

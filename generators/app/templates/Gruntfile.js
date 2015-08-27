@@ -15,9 +15,6 @@ module.exports = function(grunt) {
   // Load all grunt tasks
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks);
 
-  grunt.loadNpmTasks('grunt-angular-templates');
-  grunt.loadNpmTasks('grunt-ng-annotate');
-
   // Project configuration
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
@@ -56,6 +53,18 @@ module.exports = function(grunt) {
       test: {
         options: {
           script: 'server.js'
+        }
+      }
+    },
+    protractor: {
+      options: {
+        configFile: 'protractor.conf.js'
+      },
+      chrome: {
+        options: {
+          args: {
+            browser: 'chrome'
+          }
         }
       }
     },
@@ -186,11 +195,13 @@ module.exports = function(grunt) {
         dest: '<%= yo.dist %>/<%= pkg.name %>.tpl.js'
       }
     },
-    ngAnnotate: {
+    ngmin: {
+      options: {
+        banner: '<%= meta.banner %>'
+      },
       dist: {
-        files: {
-          '<%= yo.dist %>/<%= pkg.name %>.js': ['<%= yo.src %>/*.js', '<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js']
-        },
+        src: ['<%= yo.src %>/*.js', '<%= yo.src %>/**/*.js', '<%= yo.dist %>/<%= pkg.name %>.tpl.js'],
+        dest: '<%= yo.dist %>/<%= pkg.name %>.js'
       }
     },
     uglify: {
@@ -209,11 +220,28 @@ module.exports = function(grunt) {
     'karma:unit'
   ]);
 
+  grunt.registerTask('test', function(target) {
+    if (target === 'e2e') {
+      return grunt.task.run([
+        'build',
+        'injector',
+        'wiredep',
+        'express:test',
+        'protractor'
+      ]);
+    } else {
+      return grunt.task.run([
+        'jshint',
+        'karma:unit'
+      ]);
+    }
+  });
+
   grunt.registerTask('build', [
     'clean:dist',
     'less:dist',
     'ngtemplates',
-    'ngAnnotate',
+    'ngmin:dist',
     'uglify:dist'
   ]);
 
